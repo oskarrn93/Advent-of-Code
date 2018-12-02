@@ -14,7 +14,6 @@ public class Part1 {
          }
          in.close();
       } catch (Exception e) {
-         //TODO: handle exception
          System.err.println(e.getMessage());
          System.exit(1);
       }
