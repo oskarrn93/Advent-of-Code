@@ -12,6 +12,7 @@ public class Part1 {
          while((tmp = in.readLine()) != null) {
             input.add(Integer.parseInt(tmp));
          }
+         in.close();
       } catch (Exception e) {
          //TODO: handle exception
          System.err.println(e.getMessage());
