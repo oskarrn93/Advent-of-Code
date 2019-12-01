@@ -1,0 +1,22 @@
+{
+  "name": "advent-of-code",
+  "version": "1.0.0",
+  "description": "Advent of Code programming tasks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oskarrn93/Advent-of-Code.git"
+  },
+  "author": "Oskar Rosen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oskarrn93/Advent-of-Code/issues"
+  },
+  "homepage": "https://github.com/oskarrn93/Advent-of-Code#readme",
+  "dependencies": {
+    "prettier": "^1.19.1"
+  }
+}
