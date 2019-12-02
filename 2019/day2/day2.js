@@ -8,7 +8,7 @@ const HALT_CODE = 99;
 const ADD_CODE = 1;
 const MULTIPLY_CODE = 2;
 
-const DESIRED_OUTPUT = 19690720;
+const PART2_DESIRED_OUTPUT = 19690720;
 
 try {
   data = fs
@@ -50,22 +50,18 @@ const part1 = ({ data, noun = 12, verb = 2, instructionPointer = 0 }) => {
     instructionPointer += 4;
   }
 
-  console.log(
-    `part1 answer is: ${data[0]} with noun: ${noun} and verb: ${verb}`
-  );
   return data[0];
 };
 
 const part2 = data => {
   for (let noun = 1; noun < 99; noun++) {
     for (let verb = 1; verb < 99; verb++) {
-      if (part1({ data: [...data], noun, verb }) === DESIRED_OUTPUT) {
+      if (part1({ data: [...data], noun, verb }) === PART2_DESIRED_OUTPUT) {
         return 100 * noun + verb;
       }
     }
   }
 };
 
-const result = part2([...data]);
-
-console.log(`Answer is: ${result}`);
+console.log(`Part1 answer is: ${part1({ data: [...data] })}`);
+console.log(`Part2 answer is: ${part2([...data])}`);
