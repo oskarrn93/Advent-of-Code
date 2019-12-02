@@ -32,17 +32,11 @@ const part1 = ({ data, noun = 12, verb = 2, instructionPointer = 0 }) => {
     if (opCode === HALT_CODE) {
       break;
     } else if (opCode === ADD_CODE) {
-      const noun = data[instructionPointer + 1];
-      const verb = data[instructionPointer + 2];
-      const outputPosition = data[instructionPointer + 3];
-
-      data[outputPosition] = data[noun] + data[verb];
+      data[data[instructionPointer + 3]] =
+        data[data[instructionPointer + 1]] + data[data[instructionPointer + 2]];
     } else if (opCode === MULTIPLY_CODE) {
-      const noun = data[instructionPointer + 1];
-      const verb = data[instructionPointer + 2];
-      const outputPosition = data[instructionPointer + 3];
-
-      data[outputPosition] = data[noun] * data[verb];
+      data[data[instructionPointer + 3]] =
+        data[data[instructionPointer + 1]] * data[data[instructionPointer + 2]];
     } else {
       console.error(`Invalid opCode: ${opCode}`);
     }
