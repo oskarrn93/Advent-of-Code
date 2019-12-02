@@ -20,6 +20,10 @@ try {
   exit();
 }
 
+//reset the input to before crash
+data[1] = 12
+data[2] = 2
+
 while (true) {
   const opCode = data[index];
 
