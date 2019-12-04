@@ -115,5 +115,4 @@ const part2 = ({ wire1, wire2 }) => {
 };
 
 console.log(`Part1 answer is: ${part1({ wire1, wire2 })}`);
-
 console.log(`Part2 answer is: ${part2({ wire1, wire2 })}`);
