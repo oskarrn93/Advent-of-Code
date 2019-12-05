@@ -29,7 +29,7 @@ const isWithinRangeOfInput = (password, lower, upper) => {
   return true;
 };
 
-const getIndexByNumbers = (password) => {
+const getIndexByNumbers = password => {
   const counter = {};
   const arrayOfNumbers = [...password];
   arrayOfNumbers.forEach(number => {
@@ -45,11 +45,11 @@ const getIndexByNumbers = (password) => {
     ([key, value]) => value.length > 1
   );
 
-  return result
-}
+  return result;
+};
 
 const isTwoAdjacentDigitsAreSame = password => {
-  const result = getIndexByNumbers(password)
+  const result = getIndexByNumbers(password);
 
   if (result.length < 1) return false;
 
@@ -68,35 +68,40 @@ const isDigitsIncreasing = password => {
   return result;
 };
 
-const validateCriteriasPart1 = (potentialPasswords, lower, upper) => {
+const validateCriteriasPart1 = (potentialPassword, lower, upper) => {
+  if (!isSixDigits(potentialPassword)) return false;
+  if (!isWithinRangeOfInput(potentialPassword, lower, upper)) return false;
+  if (!isTwoAdjacentDigitsAreSame(potentialPassword)) return false;
+  if (!isDigitsIncreasing(potentialPassword)) return false;
+  return true;
+};
+
+const validateCriteriasPart2 = (potentialPassword, lower, upper) => {
+  if (!isSixDigits(potentialPassword)) return false;
+  if (!isWithinRangeOfInput(potentialPassword, lower, upper)) return false;
+  if (!isTwoAdjacentDigitsAreSame(potentialPassword)) return false;
+  if (!isDigitsIncreasing(potentialPassword)) return false;
+  if (!isNotPartOfALargerMatchingGroup(potentialPassword)) return false;
+  return true;
+};
+
+const testEveryPassword = (
+  potentialPasswords,
+  lower,
+  upper,
+  validationFunction
+) => {
   const result = potentialPasswords.filter(potentialPassword => {
-    if (!isSixDigits(potentialPassword)) return false;
-    if (!isWithinRangeOfInput(potentialPassword, lower, upper)) return false;
-    if (!isTwoAdjacentDigitsAreSame(potentialPassword)) return false;
-    if (!isDigitsIncreasing(potentialPassword)) return false;
-    return true;
+    return validationFunction(potentialPassword, lower, upper);
   });
 
   return result;
 };
 
 const isNotPartOfALargerMatchingGroup = password => {
-  const indexByNumbers = getIndexByNumbers(password)
-  const nrOfOccurences = indexByNumbers.map(([index, value]) => value.length)
-  return nrOfOccurences.some(element => element === 2)
-};
-
-const validateCriteriasPart2 = (potentialPasswords, lower, upper) => {
-  const result = potentialPasswords.filter(potentialPassword => {
-    if (!isSixDigits(potentialPassword)) return false;
-    if (!isWithinRangeOfInput(potentialPassword, lower, upper)) return false;
-    if (!isTwoAdjacentDigitsAreSame(potentialPassword)) return false;
-    if (!isDigitsIncreasing(potentialPassword)) return false;
-    if (!isNotPartOfALargerMatchingGroup(potentialPassword)) return false;
-    return true;
-  });
-
-  return result;
+  const indexByNumbers = getIndexByNumbers(password);
+  const nrOfOccurences = indexByNumbers.map(([index, value]) => value.length);
+  return nrOfOccurences.some(element => element === 2);
 };
 
 const generatePotentialPasswords = (lower, upper) => {
@@ -111,18 +116,25 @@ const part1 = input => {
   const [lower, upper] = input.split("-");
   const potentialPasswords = generatePotentialPasswords(lower, upper);
 
-  const result = validateCriteriasPart1(potentialPasswords, lower, upper);
-  return result;
+  return testEveryPassword(
+    potentialPasswords,
+    lower,
+    upper,
+    validateCriteriasPart1
+  );
 };
 
 const part2 = input => {
   const [lower, upper] = input.split("-");
   const potentialPasswords = generatePotentialPasswords(lower, upper);
 
-  const result = validateCriteriasPart2(potentialPasswords, lower, upper);
-  return result;
+  return testEveryPassword(
+    potentialPasswords,
+    lower,
+    upper,
+    validateCriteriasPart2
+  );
 };
-
 
 console.log(`Part1 answer is: ${part1(input).length}`);
 console.log(`Part2 answer is: ${part2(input).length}`);
