@@ -2,139 +2,65 @@ const fs = require("fs");
 
 const inputFile = "./input.txt";
 
-let input = null;
+let data = null;
+
+const HALT_CODE = 99;
+const ADD_CODE = 1;
+const MULTIPLY_CODE = 2;
+const MOVE_CODE = 3;
+const OUTPUT_CODE = 4;
+
+const POSITION_MODE = 0;
+const IMMEDIATE_MODE = 1;
 
 try {
-  input = fs.readFileSync(inputFile, "utf8").trim();
+  data = fs
+    .readFileSync(inputFile, "utf8")
+    .trim()
+    .split(",")
+    .map(item => parseInt(item));
 } catch (error) {
   console.error(error);
   exit();
 }
 
-const isSixDigits = password => {
-  if (Number.isInteger(parseInt(password)) === false) {
-    console.error("isSixDigits failed number is integer");
-    return false;
+const part1 = ({ data, noun = 12, verb = 2, instructionPointer = 0 }) => {
+  //reset the input to before crash
+  data[1] = noun;
+  data[2] = verb;
+
+  while (true) {
+    const opCode = data[instructionPointer];
+
+    const MODE = opCode.slice(0, 2);
+    const CODE = opCode.slice(2);
+
+    if (MODE === 0) {
+      if (CODE === HALT_CODE) {
+        break;
+      } else if (CODE === ADD_CODE) {
+        data[data[instructionPointer + 3]] =
+          data[data[instructionPointer + 1]] +
+          data[data[instructionPointer + 2]];
+      } else if (CODE === MULTIPLY_CODE) {
+        data[data[instructionPointer + 3]] =
+          data[data[instructionPointer + 1]] *
+          data[data[instructionPointer + 2]];
+      } else if (CODE === MOVE_CODE) {
+        data[data[instructionPointer + 1]] = data[instructionPointer + 1];
+      } else if (CODE === OUTPUT_CODE) {
+        return data[data[instructionPointer + 1]];
+      } else {
+        console.error(`Invalid CODE: ${CODE}`);
+      }
+    } else if ( MODE === 1) {
+
+    }
+
+    instructionPointer += 4;
   }
-  if (password.length != 6) {
-    console.error("isSixDigits failed number length");
-    return false;
-  }
-  return true;
+
+  return data[0];
 };
 
-const isWithinRangeOfInput = (password, lower, upper) => {
-  if (password < lower) return false;
-  if (password > upper) return false;
-  return true;
-};
-
-const getIndexByNumbers = password => {
-  const counter = {};
-  const arrayOfNumbers = [...password];
-  arrayOfNumbers.forEach(number => {
-    const tmp = arrayOfNumbers.reduce(function(accumulator, element, index) {
-      if (element === number) accumulator.push(index);
-      return accumulator;
-    }, []);
-
-    counter[number] = tmp;
-  });
-
-  const result = Object.entries(counter).filter(
-    ([key, value]) => value.length > 1
-  );
-
-  return result;
-};
-
-const isTwoAdjacentDigitsAreSame = password => {
-  const result = getIndexByNumbers(password);
-
-  if (result.length < 1) return false;
-
-  return true;
-};
-
-const isDigitsIncreasing = password => {
-  const arrayOfNumbers = [...password];
-
-  const result = arrayOfNumbers.every((numberToCheck, index) => {
-    let numberIsLarger = arrayOfNumbers
-      .slice(index)
-      .filter(numberToCompare => numberToCheck > numberToCompare);
-    return numberIsLarger.length == 0;
-  });
-  return result;
-};
-
-const validateCriteriasPart1 = (potentialPassword, lower, upper) => {
-  if (!isSixDigits(potentialPassword)) return false;
-  if (!isWithinRangeOfInput(potentialPassword, lower, upper)) return false;
-  if (!isTwoAdjacentDigitsAreSame(potentialPassword)) return false;
-  if (!isDigitsIncreasing(potentialPassword)) return false;
-  return true;
-};
-
-const validateCriteriasPart2 = (potentialPassword, lower, upper) => {
-  if (!isSixDigits(potentialPassword)) return false;
-  if (!isWithinRangeOfInput(potentialPassword, lower, upper)) return false;
-  if (!isTwoAdjacentDigitsAreSame(potentialPassword)) return false;
-  if (!isDigitsIncreasing(potentialPassword)) return false;
-  if (!isNotPartOfALargerMatchingGroup(potentialPassword)) return false;
-  return true;
-};
-
-const testEveryPassword = (
-  potentialPasswords,
-  lower,
-  upper,
-  validationFunction
-) => {
-  const result = potentialPasswords.filter(potentialPassword => {
-    return validationFunction(potentialPassword, lower, upper);
-  });
-
-  return result;
-};
-
-const isNotPartOfALargerMatchingGroup = password => {
-  const indexByNumbers = getIndexByNumbers(password);
-  const nrOfOccurences = indexByNumbers.map(([index, value]) => value.length);
-  return nrOfOccurences.some(element => element === 2);
-};
-
-const generatePotentialPasswords = (lower, upper) => {
-  const potentialPasswords = [];
-  for (let a = lower; a < upper; a++) {
-    potentialPasswords.push(a.toString());
-  }
-  return potentialPasswords;
-};
-
-const part1 = input => {
-  const [lower, upper] = input.split("-");
-  const potentialPasswords = generatePotentialPasswords(lower, upper);
-
-  return testEveryPassword(
-    potentialPasswords,
-    lower,
-    upper,
-    validateCriteriasPart1
-  );
-};
-
-const part2 = input => {
-  const [lower, upper] = input.split("-");
-  const potentialPasswords = generatePotentialPasswords(lower, upper);
-
-  return testEveryPassword(
-    potentialPasswords,
-    lower,
-    upper,
-    validateCriteriasPart2
-  );
-};
-
-console.log(`Part1 answer is: ${part1(input).length}`);
-console.log(`Part2 answer is: ${part2(input).length}`);
+console.log(`Part1 answer is: ${part1({ data: [...data] })}`);
