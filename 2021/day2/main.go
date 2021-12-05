@@ -15,6 +15,7 @@ type Command struct {
 type Position struct {
 	horizontal int
 	depth      int
+	aim        int
 }
 
 func convertStringToInt(stingValue string) int {
@@ -66,6 +67,18 @@ func updatePosition(command Command, position *Position) {
 	}
 }
 
+func updatePositionWithAim(command Command, position *Position) {
+	if command.direction == "forward" {
+		position.horizontal += command.unit
+		position.depth += position.aim * command.unit
+	} else if command.direction == "up" {
+		position.aim -= command.unit
+	} else if command.direction == "down" {
+		position.aim += command.unit
+	} else {
+		panic("unknown direction")
+	}
+}
 func part1() {
 	fmt.Println("Advent of Code day 2 part 1")
 
@@ -77,10 +90,26 @@ func part1() {
 	}
 
 	for _, command := range input {
-		fmt.Println("command:", command)
 		updatePosition(command, &position)
+	}
 
-		fmt.Println("position:", position)
+	result := position.horizontal * position.depth
+	fmt.Println("Answer:", result)
+}
+
+func part2() {
+	fmt.Println("Advent of Code day 2 part 2")
+
+	input := readInputFromFile()
+
+	position := Position{
+		horizontal: 0,
+		depth:      0,
+		aim:        0,
+	}
+
+	for _, command := range input {
+		updatePositionWithAim(command, &position)
 	}
 
 	result := position.horizontal * position.depth
@@ -89,4 +118,5 @@ func part1() {
 
 func main() {
 	part1()
+	part2()
 }
