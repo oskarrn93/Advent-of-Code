@@ -58,9 +58,14 @@ func sumArrayValues(values [][]int) []int {
 	return result
 }
 
-func getMaxValue(values []int) int {
+func getMaxValues(values []int, size int) []int {
+
 	sort.Ints(values)
-	return values[len(values)-1]
+
+	sort.Sort(sort.Reverse(sort.IntSlice(values)))
+
+	return values[0:size]
+
 }
 
 func convertStringToInt(stingValue string) int {
@@ -80,13 +85,26 @@ func part1() {
 
 	sumValues := sumArrayValues(values)
 
-	maxValue := getMaxValue(sumValues)
+	maxValues := getMaxValues(sumValues, 1)
+	sumMaxValue := sumArray(maxValues)
 
-	fmt.Println("Max value: ", maxValue)
+	fmt.Println("Max value: ", sumMaxValue)
+}
 
+func part2() {
+	fmt.Println("Advent of Code day 1 part 2")
+
+	values := readInputFromFile()
+
+	sumValues := sumArrayValues(values)
+
+	maxValues := getMaxValues(sumValues, 3)
+	sumMaxValues := sumArray(maxValues)
+
+	fmt.Println("Sum Max value: ", sumMaxValues)
 }
 
 func main() {
 	part1()
-
+	part2()
 }
