@@ -7,7 +7,6 @@ defmodule Day1 do
     |> String.trim()
     |> String.split("\n\n")
     |> Enum.map(&String.split(&1, "\n"))
-    # |> IO.inspect(label: "test 1")
     |> Enum.map(&Enum.map(&1, fn calories -> {v, _} = Integer.parse(calories); v end))
     |> Enum.map(&Enum.sum/1)
     |> Enum.sort
