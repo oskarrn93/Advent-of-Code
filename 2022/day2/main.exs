@@ -33,7 +33,19 @@ defmodule Day2 do
     end
   end
 
-  def main() do
+  def replace_card(card1, card2) do
+    case card2 do
+      @rock when card1 == @rock -> @scissors
+      @rock when card1 == @paper -> @rock
+      @rock when card1 == @scissors -> @paper
+      @paper -> card1
+      @scissors when card1 == @rock -> @paper
+      @scissors when card1 == @paper -> @scissors
+      @scissors when card1 == @scissors -> @rock
+    end
+  end
+
+  def setup() do
     {:ok, input} = File.read("input.txt")
 
     input
@@ -41,14 +53,23 @@ defmodule Day2 do
     |> String.split("\n")
     |> Enum.map(&String.split(&1, " "))
     |> Enum.map(fn [card1, card2] -> [card1, remap_card2(card2)] end)
-    |> Enum.map(fn [card1, card2] -> get_score(card1, card2) end)
-    |> Enum.sum()
   end
 
   def part1 do
-    main()
+    setup()
+    |> Enum.map(fn [card1, card2] -> get_score(card1, card2) end)
+    |> Enum.sum()
     |> IO.inspect(label: "Part 1")
+  end
+
+  def part2 do
+    setup()
+    |> Enum.map(fn [card1, card2] -> [card1, replace_card(card1, card2)] end)
+    |> Enum.map(fn [card1, card2] -> get_score(card1, card2) end)
+    |> Enum.sum()
+    |> IO.inspect(label: "Part 2")
   end
 end
 
 Day2.part1()
+Day2.part2()
