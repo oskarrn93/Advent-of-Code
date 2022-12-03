@@ -17,13 +17,13 @@ defmodule Day3 do
     input
     |> String.trim()
     |> String.split("\n")
-    |> Enum.map(&String.split_at(&1, Integer.floor_div(String.length(&1), 2)))
-    |> Enum.map(&Tuple.to_list(&1))
-    |> Enum.map(&Enum.map(&1, fn x -> String.graphemes(x) end))
   end
 
   def part1 do
     setup()
+    |> Enum.map(&String.split_at(&1, Integer.floor_div(String.length(&1), 2)))
+    |> Enum.map(&Tuple.to_list(&1))
+    |> Enum.map(&Enum.map(&1, fn x -> String.graphemes(x) end))
     |> Enum.map(fn [a, b] ->
       MapSet.intersection(MapSet.new(a), MapSet.new(b))
     end)
@@ -33,6 +33,21 @@ defmodule Day3 do
     |> Enum.sum()
     |> IO.inspect(label: "Part 1")
   end
+
+  def part2 do
+    setup()
+    |> Enum.chunk_every(3)
+    |> Enum.map(&Enum.map(&1, fn x -> String.graphemes(x) end))
+    |> Enum.map(fn [a, b, c] ->
+      MapSet.intersection(MapSet.intersection(MapSet.new(a), MapSet.new(b)), MapSet.new(c))
+    end)
+    |> Enum.map(&MapSet.to_list(&1))
+    |> Enum.map(&Enum.join(&1))
+    |> Enum.map(&convert_character_to_value(&1))
+    |> Enum.sum()
+    |> IO.inspect(label: "Part 2")
+  end
 end
 
 Day3.part1()
+Day3.part2()
