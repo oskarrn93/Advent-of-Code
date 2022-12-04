@@ -5,8 +5,7 @@ defmodule Day4 do
     input
     |> String.trim()
     |> String.split("\n")
-    |> Enum.flat_map(&String.split(&1, ","))
-    |> Enum.flat_map(&String.split(&1, "-"))
+    |> Enum.flat_map(&String.splitter(&1, [",", "-"]))
     |> Enum.map(fn x ->
       {v, _} = Integer.parse(x)
       v
@@ -18,35 +17,19 @@ defmodule Day4 do
 
   def part1 do
     setup()
-    |> Enum.map(fn [a, b] ->
-      intersect_numbers = MapSet.intersection(a, b)
-      length_intersect_numbers = MapSet.size(intersect_numbers)
-
-      length_a = MapSet.size(a)
-      length_b = MapSet.size(b)
-
-      case length_intersect_numbers do
-        ^length_a -> 1
-        ^length_b -> 1
-        _ -> 0
-      end
+    |> Enum.filter(fn [a, b] ->
+      MapSet.subset?(a, b) or MapSet.subset?(b, a)
     end)
-    |> Enum.sum()
+    |> Enum.count()
     |> IO.inspect(label: "Part 1")
   end
 
   def part2 do
     setup()
-    |> Enum.map(fn [a, b] ->
-      intersect_numbers = MapSet.intersection(a, b)
-      length_intersect_numbers = MapSet.size(intersect_numbers)
-
-      cond do
-        length_intersect_numbers > 0 -> 1
-        true -> 0
-      end
+    |> Enum.filter(fn [a, b] ->
+      MapSet.size(MapSet.intersection(a, b)) > 0
     end)
-    |> Enum.sum()
+    |> Enum.count()
     |> IO.inspect(label: "Part 2")
   end
 end
